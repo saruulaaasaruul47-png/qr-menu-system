@@ -9,10 +9,6 @@ envVarGroups:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: qr-postgres
-          property: connectionString
       - key: JWT_ACCESS_SECRET
         sync: false
       - key: JWT_REFRESH_SECRET
@@ -41,18 +37,10 @@ envVarGroups:
         value: mnt
       - key: STRIPE_ORDER_AMOUNT_MULTIPLIER
         value: "1"
-      - key: SMTP_HOST
-        value: ""
       - key: SMTP_PORT
         value: "587"
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASS
-        sync: false
       - key: SMTP_FROM
         value: QR Menu <no-reply@qr-menu.local>
-      - key: RABBITMQ_URL
-        value: ""
 
 services:
   - type: web
@@ -65,6 +53,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
       - key: AUTH_SERVICE_URLS
         sync: false
       - key: RESTAURANT_SERVICE_URLS
@@ -96,6 +88,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-restaurant-service
@@ -107,6 +103,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-menu-service
@@ -118,6 +118,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-order-service
@@ -129,6 +133,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-payment-service
@@ -140,6 +148,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-notification-service
@@ -151,6 +163,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-analytics-service
@@ -162,6 +178,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-qr-service
@@ -173,6 +193,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-loyalty-service
@@ -184,6 +208,10 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
 
   - type: web
     name: qr-audit-service
@@ -195,3 +223,7 @@ services:
     autoDeployTrigger: checksPass
     envVars:
       - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString

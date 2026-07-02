@@ -163,7 +163,20 @@ SMTP_FROM=QR Menu <no-reply@your-domain.com>
 
 Email одоохондоо хэрэглэхгүй бол SMTP утгуудыг хоосон үлдээж болно.
 
-`DATABASE_URL`-ийг гараар бичих шаардлагагүй. Render Postgres үүсэх үед `render.yaml`-аар автоматаар холбоно.
+`DATABASE_URL`-ийг env group дээр гараар бичих шаардлагагүй. Render env group дотор `fromDatabase` ажиллахгүй тул `render.yaml` дээр service бүрийн `envVars` дотор `qr-postgres`-оос автоматаар холбоно.
+
+Жишээ нь service бүр дээр ийм хэлбэртэй байна:
+
+```yaml
+envVars:
+  - fromGroup: qr-menu-backend-common
+  - key: DATABASE_URL
+    fromDatabase:
+      name: qr-postgres
+      property: connectionString
+```
+
+Render дээр `envVarGroups[0].envVars[1] must have a key and value` гэсэн алдаа гарвал `DATABASE_URL` env group дотор орчихсон байна гэсэн үг. Түүнийг service бүрийн `envVars` руу шилжүүлнэ.
 
 ## 6. Gateway service URL-ууд тохируулах
 
