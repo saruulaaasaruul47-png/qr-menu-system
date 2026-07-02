@@ -1,5 +1,7 @@
+import express from "express";
 import { env } from "../../../../shared/config/env.js";
 import { authMiddleware, publicRoute } from "../middlewares/auth.middleware.js";
+import { forwardJson } from "../utils/forward.js";
 import { proxy } from "../utils/proxy.js";
 
 const api = "/api/v1";
@@ -107,17 +109,23 @@ const gatewayRoutes = [
   },
 ];
 
-const registerRoute = (app, { targets, route }) => {
+const registerRoute = (app, { group, targets, route }) => {
   const method = route.method || "use";
   const publicPath = `${api}${route.path}`;
   const proxyRoot = route.proxyRoot ?? route.path;
   const middleware = route.public ? publicRoute : authMiddleware;
+  const routePath = `${api}${proxyRoot}`;
 
-  app[method](publicPath, middleware, proxy(`${api}${proxyRoot}`, env[targets], route.upstream));
+  if (group.service === "auth") {
+    app[method](publicPath, middleware, express.json({ limit: "1mb" }), forwardJson(routePath, env[targets], route.upstream));
+    return;
+  }
+
+  app[method](publicPath, middleware, proxy(routePath, env[targets], route.upstream));
 };
 
 export const registerGatewayRoutes = (app) => {
   gatewayRoutes.forEach((group) => {
-    group.routes.forEach((route) => registerRoute(app, { targets: group.targets, route }));
+    group.routes.forEach((route) => registerRoute(app, { group, targets: group.targets, route }));
   });
 };

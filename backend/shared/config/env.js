@@ -36,12 +36,29 @@ const corsOrigin = (value) => {
   return origins.length === 1 ? origins[0] : origins;
 };
 
+const firstOrigin = (value) => {
+  if (!value || value === "*") return "";
+  const origin = Array.isArray(value) ? value[0] : value.split(",")[0]?.trim();
+  if (!origin) return "";
+
+  try {
+    return new URL(origin).origin;
+  } catch {
+    return origin.replace(/\/+$/, "");
+  }
+};
+
 const servicePort = (servicePortValue, fallback) =>
   Number(servicePortValue || (process.env.NODE_ENV === "production" ? process.env.PORT : "") || fallback);
 
+const resolvedCorsOrigin = corsOrigin(process.env.CORS_ORIGIN);
+const defaultPublicUrl = process.env.NODE_ENV === "production"
+  ? firstOrigin(resolvedCorsOrigin) || "https://qr-menu-system-lemon.vercel.app"
+  : "http://localhost:5173";
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
-  corsOrigin: corsOrigin(process.env.CORS_ORIGIN),
+  corsOrigin: resolvedCorsOrigin,
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET || "change-this-access-secret",
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "change-this-refresh-secret",
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "15m",
@@ -59,7 +76,7 @@ export const env = {
   loyaltyServicePort: servicePort(process.env.LOYALTY_SERVICE_PORT, 3009),
   auditServicePort: servicePort(process.env.AUDIT_SERVICE_PORT, 3010),
   rabbitMqUrl: process.env.RABBITMQ_URL || "",
-  appPublicUrl: process.env.APP_PUBLIC_URL || "http://localhost:5173",
+  appPublicUrl: normalizeServiceUrl(process.env.APP_PUBLIC_URL || defaultPublicUrl),
   stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
   stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
