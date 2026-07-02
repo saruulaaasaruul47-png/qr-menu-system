@@ -6,10 +6,13 @@ import { createRoundRobin } from "./loadBalancer.js";
 export const proxy = (routePath, targets, rewriteTo = "") => {
   const targetList = Array.isArray(targets) ? targets : [targets];
   const nextTarget = createRoundRobin(targetList);
+  const timeoutMs = 30000;
 
   return createProxyMiddleware({
     target: targetList[0],
     changeOrigin: true,
+    timeout: timeoutMs,
+    proxyTimeout: timeoutMs,
     router: () => nextTarget(),
     pathRewrite: (_path, req) => req.originalUrl.replace(routePath, rewriteTo),
     on: {
