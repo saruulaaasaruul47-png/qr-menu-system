@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { assertInventoryAvailable, getRequestedFoodQuantities } from "../shared/utils/inventory.js";
-import { calculateDiscount } from "../services/order-service/src/services/coupon.service.js";
+import { calculateDiscount } from "../shared/utils/coupon.js";
 
 test("getRequestedFoodQuantities merges duplicate food items", () => {
   const quantities = getRequestedFoodQuantities([
