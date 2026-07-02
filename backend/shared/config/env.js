@@ -7,15 +7,24 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
+const normalizeServiceUrl = (rawUrl) => {
+  if (!rawUrl) return "";
+  const withProtocol = /^https?:\/\//i.test(rawUrl)
+    ? rawUrl
+    : `${process.env.NODE_ENV === "production" ? "https" : "http"}://${rawUrl}`;
+
+  try {
+    const parsed = new URL(withProtocol);
+    return parsed.origin;
+  } catch {
+    return withProtocol.replace(/\/+$/, "");
+  }
+};
+
 const splitUrls = (value, fallback) =>
   (value || fallback)
     .split(",")
-    .map((url) => url.trim())
-    .map((url) => {
-      if (!url || /^https?:\/\//i.test(url)) return url;
-      const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-      return `${protocol}://${url}`;
-    })
+    .map((url) => normalizeServiceUrl(url.trim()))
     .filter(Boolean);
 
 const corsOrigin = (value) => {
