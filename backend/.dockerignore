@@ -1,0 +1,9 @@
+node_modules
+services/*/node_modules
+generated
+.logs
+.env
+*.log
+npm-debug.log*
+stripe.exe
+coverage

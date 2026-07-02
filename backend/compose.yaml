@@ -1,0 +1,166 @@
+x-app-env: &app-env
+  env_file:
+    - .env
+  environment:
+    NODE_ENV: production
+    DATABASE_URL: postgresql://qrsystem:qrsystem_dev_password@postgres:5432/qrsystem
+    DATABASE_HOST: postgres
+    DATABASE_PORT: 5432
+    DATABASE_USER: qrsystem
+    DATABASE_PASSWORD: qrsystem_dev_password
+    DATABASE_NAME: qrsystem
+    RABBITMQ_URL: ""
+
+services:
+  api-gateway:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/api-gateway/dockerfile
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://qrsystem:qrsystem_dev_password@postgres:5432/qrsystem
+      API_GATEWAY_PORT: 3000
+      AUTH_SERVICE_URLS: http://auth-service:3001
+      RESTAURANT_SERVICE_URLS: http://restaurant-service:3002
+      MENU_SERVICE_URLS: http://menu-service:3003
+      ORDER_SERVICE_URLS: http://order-service:3004
+      PAYMENT_SERVICE_URLS: http://payment-service:3005
+      NOTIFICATION_SERVICE_URLS: http://notification-service:3006
+      ANALYTICS_SERVICE_URLS: http://analytics-service:3007
+      QR_SERVICE_URLS: http://qr-service:3008
+      LOYALTY_SERVICE_URLS: http://loyalty-service:3009
+      AUDIT_SERVICE_URLS: http://audit-service:3010
+      RABBITMQ_URL: ""
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      restaurant-service:
+        condition: service_started
+      menu-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+      analytics-service:
+        condition: service_started
+      qr-service:
+        condition: service_started
+      loyalty-service:
+        condition: service_started
+      audit-service:
+        condition: service_started
+
+  auth-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/auth-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  restaurant-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/restaurant-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  menu-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/menu-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  order-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/order-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  payment-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/payment-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notification-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/notification-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  analytics-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/analytics-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  qr-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/qr-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  loyalty-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/loyalty-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  audit-service:
+    <<: *app-env
+    build:
+      context: .
+      dockerfile: services/audit-service/dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: qrsystem
+      POSTGRES_PASSWORD: qrsystem_dev_password
+      POSTGRES_DB: qrsystem
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qrsystem -d qrsystem"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  postgres-data:
