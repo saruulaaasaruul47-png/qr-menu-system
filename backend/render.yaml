@@ -48,6 +48,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/api-gateway/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -83,6 +84,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/auth-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -98,6 +100,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/restaurant-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -113,6 +116,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/menu-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -128,6 +132,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/order-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -143,6 +148,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/payment-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -158,6 +164,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/notification-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -173,6 +180,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/analytics-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -188,6 +196,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/qr-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -203,6 +212,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/loyalty-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -218,6 +228,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: backend/services/audit-service/dockerfile
+    dockerContext: backend
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
