@@ -268,17 +268,24 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 ## 9. Prisma database schema
 
-Backend Docker image build хийх үед Prisma client generate хийгдэнэ. Service start хийх үед Prisma schema Render Postgres дээр sync хийгдэнэ.
+Backend Docker image build хийх үед Prisma client generate хийгдэнэ. Service startup дээр `prisma db push` ажиллуулахгүй. Ингэснээр database түр unreachable үед service шууд унтрахгүй.
 
-Deploy дараа database schema асуудал гарвал Render Shell дээр backend service-ийн аль нэг дээр:
+Анхны deploy-ийн дараа Render Shell дээр backend service-ийн аль нэг дээр нэг удаа schema sync хийнэ. Жишээ нь `qr-auth-service` дээр Shell нээгээд:
 
 ```bash
 cd /app
 npx prisma validate
-npx prisma db push --skip-generate
+npx prisma db push --schema /app/prisma/schema.prisma --url "$DATABASE_URL"
 ```
 
 ажиллуулж шалгаж болно.
+
+Хэрэв `P1001: Can't reach database server` гарвал:
+
+- `qr-postgres` database `Available` болсон эсэхийг шалгана.
+- Service болон database ижил Render workspace/region дээр байгаа эсэхийг шалгана.
+- Backend service дээр `DATABASE_URL` env байгаа эсэхийг шалгана.
+- Internal Database URL ашиглаж байгаа эсэхийг шалгана.
 
 ## 10. Эхний super admin үүсгэх
 

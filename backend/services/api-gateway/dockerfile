@@ -18,5 +18,5 @@ WORKDIR /app/services/api-gateway
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma --url \"$DATABASE_URL\" && node app.js"]
+CMD ["node", "app.js"]
 
