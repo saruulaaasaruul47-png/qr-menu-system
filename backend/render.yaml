@@ -47,7 +47,7 @@ services:
     name: qr-api-gateway
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/api-gateway/dockerfile
+    dockerfilePath: backend/services/api-gateway/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -82,7 +82,7 @@ services:
     name: qr-auth-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/auth-service/dockerfile
+    dockerfilePath: backend/services/auth-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -97,7 +97,7 @@ services:
     name: qr-restaurant-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/restaurant-service/dockerfile
+    dockerfilePath: backend/services/restaurant-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -112,7 +112,7 @@ services:
     name: qr-menu-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/menu-service/dockerfile
+    dockerfilePath: backend/services/menu-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -127,7 +127,7 @@ services:
     name: qr-order-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/order-service/dockerfile
+    dockerfilePath: backend/services/order-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -142,7 +142,7 @@ services:
     name: qr-payment-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/payment-service/dockerfile
+    dockerfilePath: backend/services/payment-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -157,7 +157,7 @@ services:
     name: qr-notification-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/notification-service/dockerfile
+    dockerfilePath: backend/services/notification-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -172,7 +172,7 @@ services:
     name: qr-analytics-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/analytics-service/dockerfile
+    dockerfilePath: backend/services/analytics-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -187,7 +187,7 @@ services:
     name: qr-qr-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/qr-service/dockerfile
+    dockerfilePath: backend/services/qr-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -202,7 +202,7 @@ services:
     name: qr-loyalty-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/loyalty-service/dockerfile
+    dockerfilePath: backend/services/loyalty-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
@@ -217,7 +217,7 @@ services:
     name: qr-audit-service
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./services/audit-service/dockerfile
+    dockerfilePath: backend/services/audit-service/dockerfile
     plan: free
     healthCheckPath: /health
     autoDeployTrigger: checksPass
