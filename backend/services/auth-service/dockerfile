@@ -19,5 +19,5 @@ WORKDIR /app/services/auth-service
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma && node app.js"]
+CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma --url \"$DATABASE_URL\" && node app.js"]
 
