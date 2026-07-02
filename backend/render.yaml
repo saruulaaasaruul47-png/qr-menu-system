@@ -1,0 +1,229 @@
+databases:
+  - name: qr-postgres
+    plan: free
+    databaseName: qrsystem
+    user: qrsystem
+
+envVarGroups:
+  - name: qr-menu-backend-common
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: BCRYPT_SALT_ROUNDS
+        value: "12"
+      - key: APP_PUBLIC_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: STORAGE_BASE_URL
+        value: /uploads
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: PAYMENT_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_ORDER_CURRENCY
+        value: mnt
+      - key: STRIPE_ORDER_AMOUNT_MULTIPLIER
+        value: "1"
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_FROM
+        value: QR Menu <no-reply@qr-menu.local>
+
+services:
+  - type: web
+    name: qr-api-gateway
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/api-gateway/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+      - key: AUTH_SERVICE_URLS
+        sync: false
+      - key: RESTAURANT_SERVICE_URLS
+        sync: false
+      - key: MENU_SERVICE_URLS
+        sync: false
+      - key: ORDER_SERVICE_URLS
+        sync: false
+      - key: PAYMENT_SERVICE_URLS
+        sync: false
+      - key: NOTIFICATION_SERVICE_URLS
+        sync: false
+      - key: ANALYTICS_SERVICE_URLS
+        sync: false
+      - key: QR_SERVICE_URLS
+        sync: false
+      - key: LOYALTY_SERVICE_URLS
+        sync: false
+      - key: AUDIT_SERVICE_URLS
+        sync: false
+
+  - type: web
+    name: qr-auth-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/auth-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-restaurant-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/restaurant-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-menu-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/menu-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-order-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/order-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-payment-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/payment-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-notification-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/notification-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-analytics-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/analytics-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-qr-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/qr-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-loyalty-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/loyalty-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
+
+  - type: web
+    name: qr-audit-service
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./services/audit-service/dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - fromGroup: qr-menu-backend-common
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qr-postgres
+          property: connectionString
