@@ -18,5 +18,5 @@ WORKDIR /app/services/restaurant-service
 
 EXPOSE 3002
 
-CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma --skip-generate && node app.js"]
+CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma && node app.js"]
 
