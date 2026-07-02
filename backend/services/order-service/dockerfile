@@ -1,0 +1,22 @@
+﻿FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY prisma.config.ts ./
+COPY prisma ./prisma
+ENV DATABASE_URL="postgresql://qrsystem:qrsystem_dev_password@localhost:5432/qrsystem"
+RUN npx prisma generate
+
+COPY lib ./lib
+COPY shared ./shared
+COPY services/order-service ./services/order-service
+
+WORKDIR /app/services/order-service
+
+EXPOSE 3004
+
+CMD ["sh", "-c", "npx prisma db push --schema /app/prisma/schema.prisma --skip-generate && node app.js"]
+

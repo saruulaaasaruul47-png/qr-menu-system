@@ -1,0 +1,12 @@
+.git-backups/
+node_modules/
+*.log
+
+# Environment variables
+.env
+.env.*
+!*.env.example
+
+# Build output
+dist/
+coverage/
