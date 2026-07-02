@@ -12,7 +12,7 @@ export function useAsync(load, deps) {
         const data = await load()
         if (alive) setState({ data, loading: false, error: '' })
       } catch (error) {
-        if (alive) setState({ data: null, loading: false, error: error.message })
+        if (alive) setState({ data: null, loading: false, error: error.message, status: error.status || 0 })
       }
     }
 

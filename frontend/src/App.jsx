@@ -110,8 +110,8 @@ function AppWorkspace() {
   }, [])
 
   useEffect(() => {
-    if (me.error) route('/login')
-  }, [me.error])
+    if (me.status === 401 || me.status === 403) route('/login')
+  }, [me.status])
 
   useEffect(() => {
     if (!me.data) return
@@ -131,6 +131,25 @@ function AppWorkspace() {
     return (
       <main className="grid min-h-screen place-items-center bg-[#F8FAFC]">
         <div className="w-full max-w-md px-4"><LoadingState title="Loading workspace..." /></div>
+      </main>
+    )
+  }
+
+  if (me.error && !me.data) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-[#F8FAFC]">
+        <div className="w-full max-w-md px-4">
+          <EmptyState title="Workspace unavailable" text={me.error} />
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+              onClick={refresh}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
       </main>
     )
   }

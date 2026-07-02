@@ -57,8 +57,8 @@ async function request(path, options = {}, allowRefresh = true) {
       localStorage.setItem('accessToken', refreshed.accessToken)
       if (refreshed.refreshToken) localStorage.setItem('refreshToken', refreshed.refreshToken)
       return request(path, options, false)
-    } catch {
-      clearSession()
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) clearSession()
     }
   }
   if (!response.ok) {
