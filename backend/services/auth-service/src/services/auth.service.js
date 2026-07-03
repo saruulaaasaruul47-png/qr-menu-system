@@ -40,6 +40,9 @@ const passwordResetDeliveryError = (delivery) => {
   if (/sender|from|envelope/i.test(reason)) {
     return new HttpError(502, "Gmail rejected the sender address. Set SMTP_FROM to QR Menu <your Gmail address> without quotes.");
   }
+  if (/resend|domain|from|sender/i.test(reason)) {
+    return new HttpError(502, `Email API rejected the request: ${reason}. Check RESEND_FROM verified sender/domain.`);
+  }
 
   return new HttpError(502, `Password reset email could not be sent: ${reason || "unknown SMTP error"}`);
 };

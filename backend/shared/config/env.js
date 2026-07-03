@@ -99,6 +99,8 @@ export const env = {
   smtpUser: stripWrappingQuotes(process.env.SMTP_USER || ""),
   smtpPass: stripWrappingQuotes(process.env.SMTP_PASS || "").replace(/\s+/g, ""),
   smtpFrom: stripWrappingQuotes(process.env.SMTP_FROM || "") || (process.env.SMTP_USER ? `QR Menu <${stripWrappingQuotes(process.env.SMTP_USER)}>` : "QR Menu <no-reply@qr-menu.local>"),
+  resendApiKey: stripWrappingQuotes(process.env.RESEND_API_KEY || ""),
+  resendFrom: stripWrappingQuotes(process.env.RESEND_FROM || "") || stripWrappingQuotes(process.env.SMTP_FROM || ""),
   authServiceUrls: splitUrls(process.env.AUTH_SERVICE_URLS, "http://localhost:3001"),
   restaurantServiceUrls: splitUrls(process.env.RESTAURANT_SERVICE_URLS, "http://localhost:3002"),
   menuServiceUrls: splitUrls(process.env.MENU_SERVICE_URLS, "http://localhost:3003"),

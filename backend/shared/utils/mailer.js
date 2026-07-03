@@ -20,8 +20,44 @@ const createTransporter = () => {
   });
 };
 
+const sendWithResend = async ({ to, subject, html, text }) => {
+  const from = env.resendFrom || env.smtpFrom;
+  if (!env.resendApiKey || !from) return { delivery: "skipped", reason: "resend_not_configured" };
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.resendApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ from, to, subject, html, text }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    return { delivery: "failed", reason: data.message || data.error || `Resend API failed with ${response.status}` };
+  }
+
+  return { delivery: "sent", messageId: data.id };
+};
+
 export const mailer = {
   async send({ to, subject, html, text }) {
+    if (env.resendApiKey) {
+      try {
+        const delivery = await sendWithResend({ to, subject, html, text });
+        if (delivery.delivery === "sent") {
+          logger.info({ message: "Email sent with Resend", to, subject, messageId: delivery.messageId });
+        } else {
+          logger.error({ message: "Resend email send failed", to, subject, reason: delivery.reason });
+        }
+        return delivery;
+      } catch (error) {
+        logger.error({ message: "Resend email send failed", to, subject, error });
+        return { delivery: "failed", reason: error.message };
+      }
+    }
+
     const transporter = createTransporter();
     if (!transporter) {
       logger.warn({ message: "SMTP is not configured; email was not sent", to, subject, missing: {
