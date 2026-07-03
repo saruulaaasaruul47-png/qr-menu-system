@@ -51,6 +51,17 @@ const firstOrigin = (value) => {
 const servicePort = (servicePortValue, fallback) =>
   Number(servicePortValue || (process.env.NODE_ENV === "production" ? process.env.PORT : "") || fallback);
 
+const stripWrappingQuotes = (value = "") => {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
+};
+
 const resolvedCorsOrigin = corsOrigin(process.env.CORS_ORIGIN);
 const defaultPublicUrl = process.env.NODE_ENV === "production"
   ? firstOrigin(resolvedCorsOrigin) || "https://qr-menu-system-lemon.vercel.app"
@@ -83,11 +94,11 @@ export const env = {
   stripeOrderCurrency: (process.env.STRIPE_ORDER_CURRENCY || "mnt").toLowerCase(),
   stripeOrderAmountMultiplier: Number(process.env.STRIPE_ORDER_AMOUNT_MULTIPLIER || 1),
   storageBaseUrl: process.env.STORAGE_BASE_URL || "/uploads",
-  smtpHost: process.env.SMTP_HOST?.trim() || "",
+  smtpHost: stripWrappingQuotes(process.env.SMTP_HOST || ""),
   smtpPort: Number(process.env.SMTP_PORT || 587),
-  smtpUser: process.env.SMTP_USER?.trim() || "",
-  smtpPass: process.env.SMTP_PASS?.replace(/\s+/g, "") || "",
-  smtpFrom: process.env.SMTP_FROM?.trim() || (process.env.SMTP_USER ? `QR Menu <${process.env.SMTP_USER.trim()}>` : "QR Menu <no-reply@qr-menu.local>"),
+  smtpUser: stripWrappingQuotes(process.env.SMTP_USER || ""),
+  smtpPass: stripWrappingQuotes(process.env.SMTP_PASS || "").replace(/\s+/g, ""),
+  smtpFrom: stripWrappingQuotes(process.env.SMTP_FROM || "") || (process.env.SMTP_USER ? `QR Menu <${stripWrappingQuotes(process.env.SMTP_USER)}>` : "QR Menu <no-reply@qr-menu.local>"),
   authServiceUrls: splitUrls(process.env.AUTH_SERVICE_URLS, "http://localhost:3001"),
   restaurantServiceUrls: splitUrls(process.env.RESTAURANT_SERVICE_URLS, "http://localhost:3002"),
   menuServiceUrls: splitUrls(process.env.MENU_SERVICE_URLS, "http://localhost:3003"),

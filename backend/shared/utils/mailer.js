@@ -33,8 +33,9 @@ export const mailer = {
     }
 
     try {
+      const fallbackFrom = env.smtpUser ? `QR Menu <${env.smtpUser}>` : env.smtpFrom;
       const info = await transporter.sendMail({
-        from: env.smtpFrom,
+        from: env.smtpFrom || fallbackFrom,
         to,
         subject,
         html,
@@ -44,6 +45,22 @@ export const mailer = {
       logger.info({ message: "Email sent", to, subject, messageId: info.messageId });
       return { delivery: "sent", messageId: info.messageId };
     } catch (error) {
+      const fallbackFrom = env.smtpUser ? `QR Menu <${env.smtpUser}>` : "";
+      if (fallbackFrom && env.smtpFrom && env.smtpFrom !== fallbackFrom) {
+        try {
+          const info = await transporter.sendMail({
+            from: fallbackFrom,
+            to,
+            subject,
+            html,
+            text,
+          });
+          logger.info({ message: "Email sent with fallback sender", to, subject, messageId: info.messageId });
+          return { delivery: "sent", messageId: info.messageId };
+        } catch (fallbackError) {
+          logger.error({ message: "Email fallback send failed", to, subject, error: fallbackError });
+        }
+      }
       logger.error({ message: "Email send failed", to, subject, error });
       return { delivery: "failed", reason: error.message };
     }
