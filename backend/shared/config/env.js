@@ -87,7 +87,7 @@ export const env = {
   smtpPort: Number(process.env.SMTP_PORT || 587),
   smtpUser: process.env.SMTP_USER || "",
   smtpPass: process.env.SMTP_PASS || "",
-  smtpFrom: process.env.SMTP_FROM || "QR Menu <no-reply@qr-menu.local>",
+  smtpFrom: process.env.SMTP_FROM || (process.env.SMTP_USER ? `QR Menu <${process.env.SMTP_USER}>` : "QR Menu <no-reply@qr-menu.local>"),
   authServiceUrls: splitUrls(process.env.AUTH_SERVICE_URLS, "http://localhost:3001"),
   restaurantServiceUrls: splitUrls(process.env.RESTAURANT_SERVICE_URLS, "http://localhost:3002"),
   menuServiceUrls: splitUrls(process.env.MENU_SERVICE_URLS, "http://localhost:3003"),

@@ -9,7 +9,7 @@ import { ensureTenantAccess, resolveRestaurantId } from "../../../../shared/util
 import { assertCouponUsable, calculateDiscount, normalizeCouponCode } from "./coupon.service.js";
 
 const statusOwners = {
-  [ORDER_STATUS.ACCEPTED]: ["WAITER", "MANAGER", "OWNER", "SUPER_ADMIN"],
+  [ORDER_STATUS.ACCEPTED]: ["KITCHEN", "WAITER", "MANAGER", "OWNER", "SUPER_ADMIN"],
   [ORDER_STATUS.PREPARING]: ["KITCHEN", "MANAGER", "OWNER", "SUPER_ADMIN"],
   [ORDER_STATUS.READY]: ["KITCHEN", "MANAGER", "OWNER", "SUPER_ADMIN"],
   [ORDER_STATUS.SERVED]: ["WAITER", "MANAGER", "OWNER", "SUPER_ADMIN"],

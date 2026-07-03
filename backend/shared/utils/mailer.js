@@ -21,18 +21,28 @@ export const mailer = {
   async send({ to, subject, html, text }) {
     const transporter = createTransporter();
     if (!transporter) {
-      logger.warn({ message: "SMTP is not configured; email was not sent", to, subject });
-      return { delivery: "mock" };
+      logger.warn({ message: "SMTP is not configured; email was not sent", to, subject, missing: {
+        host: !env.smtpHost,
+        user: !env.smtpUser,
+        pass: !env.smtpPass,
+      } });
+      return { delivery: "skipped", reason: "smtp_not_configured" };
     }
 
-    const info = await transporter.sendMail({
-      from: env.smtpFrom,
-      to,
-      subject,
-      html,
-      text,
-    });
+    try {
+      const info = await transporter.sendMail({
+        from: env.smtpFrom,
+        to,
+        subject,
+        html,
+        text,
+      });
 
-    return { delivery: "sent", messageId: info.messageId };
+      logger.info({ message: "Email sent", to, subject, messageId: info.messageId });
+      return { delivery: "sent", messageId: info.messageId };
+    } catch (error) {
+      logger.error({ message: "Email send failed", to, subject, error });
+      return { delivery: "failed", reason: error.message };
+    }
   },
 };

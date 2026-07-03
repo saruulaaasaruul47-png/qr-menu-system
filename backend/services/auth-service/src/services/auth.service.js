@@ -192,7 +192,12 @@ export const authService = {
     });
 
     if (delivery.delivery !== "sent") {
-      throw new HttpError(500, "Password reset email could not be sent");
+      throw new HttpError(
+        delivery.reason === "smtp_not_configured" ? 503 : 500,
+        delivery.reason === "smtp_not_configured"
+          ? "Email service is not configured"
+          : "Password reset email could not be sent",
+      );
     }
 
     return { message: "Password reset code sent" };

@@ -64,7 +64,7 @@ export function OrdersPage({ restaurantId, refresh, nonce, user, kitchen = false
       { status: 'PENDING',   label: 'New Orders',     border: 'border-amber-500/40',   bg: 'bg-amber-500/5',   badge: 'bg-amber-500 text-white',   next: 'ACCEPTED'  },
       { status: 'ACCEPTED',  label: 'Accepted',        border: 'border-blue-500/40',    bg: 'bg-blue-500/5',    badge: 'bg-blue-500 text-white',    next: 'PREPARING' },
       { status: 'PREPARING', label: 'Preparing',       border: 'border-blue-500/40',    bg: 'bg-blue-500/5',    badge: 'bg-blue-600 text-white',    next: 'READY'     },
-      { status: 'READY',     label: 'Ready to Serve',  border: 'border-emerald-500/40', bg: 'bg-emerald-500/5', badge: 'bg-emerald-500 text-white', next: 'SERVED'    },
+      { status: 'READY',     label: 'Ready to Serve',  border: 'border-emerald-500/40', bg: 'bg-emerald-500/5', badge: 'bg-emerald-500 text-white'                  },
     ]
 
     return (
@@ -125,12 +125,12 @@ export function OrdersPage({ restaurantId, refresh, nonce, user, kitchen = false
                       {order.note && (
                         <div className="mb-2.5 rounded-lg border border-amber-400/20 bg-amber-400/[0.08] px-2 py-1.5 text-[10px] leading-relaxed text-amber-400/80">⚠ {order.note}</div>
                       )}
-                      <button
+                      {next && <button
                         onClick={() => update(order, next)}
                         className="rounded-lg border border-slate-500/30 bg-slate-600/40 px-2.5 py-1 text-[10px] font-bold text-slate-300 transition-all hover:bg-slate-600/60 active:scale-95"
                       >
                         {next} →
-                      </button>
+                      </button>}
                     </article>
                   ))}
                   {!colOrders.length && <div className="py-10 text-center text-[12px] text-slate-700">No orders here</div>}

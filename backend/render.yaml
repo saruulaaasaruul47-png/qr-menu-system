@@ -37,10 +37,16 @@ envVarGroups:
         value: mnt
       - key: STRIPE_ORDER_AMOUNT_MULTIPLIER
         value: "1"
+      - key: SMTP_HOST
+        sync: false
       - key: SMTP_PORT
         value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
       - key: SMTP_FROM
-        value: QR Menu <no-reply@qr-menu.local>
+        sync: false
 
 services:
   - type: web
