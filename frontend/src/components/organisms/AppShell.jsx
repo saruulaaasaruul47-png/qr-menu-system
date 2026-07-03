@@ -7,8 +7,9 @@ import { canSeeNavItem, hasPermission, PERMISSIONS } from '../../lib/permissions
 
 export function AppShell({ active, setActive, children, user, restaurant, refresh, roleLabel }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const visibleNav = nav.filter((item) => canSeeNavItem(user, item))
+  const visibleNav = nav.filter((item) => !item.hidden && canSeeNavItem(user, item))
   const canOpenCustomerView = restaurant?.id && hasPermission(user, PERMISSIONS.MANAGE_TABLES)
+  const canOpenNotifications = canSeeNavItem(user, nav.find((item) => item.id === 'notifications'))
 
   const logout = () => {
     api('/auth/logout', { method: 'POST' }).catch(() => {})
@@ -143,10 +144,22 @@ export function AppShell({ active, setActive, children, user, restaurant, refres
             >
               <RefreshCw size={15} />
             </button>
-            <button className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100">
-              <Bell size={17} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full border-2 border-white bg-amber-400" />
-            </button>
+            {canOpenNotifications && (
+              <button
+                type="button"
+                onClick={() => setActive('notifications')}
+                className={`relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
+                  active === 'notifications'
+                    ? 'bg-amber-50 text-amber-600'
+                    : 'text-slate-500 hover:bg-slate-100'
+                }`}
+                aria-label="Open notifications"
+                title="Notifications"
+              >
+                <Bell size={17} />
+                <span className="absolute right-2 top-2 h-2 w-2 rounded-full border-2 border-white bg-amber-400" />
+              </button>
+            )}
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 shadow-sm">
               <span className="text-[11px] font-bold text-white">{(user?.name || 'AD').slice(0, 2).toUpperCase()}</span>
             </div>

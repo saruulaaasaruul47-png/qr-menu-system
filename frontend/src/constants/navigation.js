@@ -18,7 +18,7 @@ export const nav = [
   { id: 'payments', label: 'Payments', Icon: CreditCard, group: 'ops', permission: PERMISSIONS.VERIFY_PAYMENT, roles: [ROLES.OWNER, ROLES.CASHIER] },
   { id: 'analytics', label: 'Analytics', Icon: BarChart3, group: 'intel', permission: PERMISSIONS.VIEW_REPORTS, roles: [ROLES.SUPER_ADMIN, ROLES.OWNER, ROLES.MANAGER] },
   { id: 'loyalty', label: 'Loyalty', Icon: Star, group: 'intel', roles: [ROLES.OWNER, ROLES.MANAGER] },
-  { id: 'notifications', label: 'Notifications', Icon: Bell, group: 'sys', roles: [ROLES.OWNER, ROLES.MANAGER] },
+  { id: 'notifications', label: 'Notifications', Icon: Bell, group: 'sys', roles: [ROLES.OWNER, ROLES.MANAGER], hidden: true },
   { id: 'audit', label: 'Audit Log', Icon: ShieldCheck, group: 'sys', permission: PERMISSIONS.VIEW_REPORTS, roles: [ROLES.OWNER, ROLES.MANAGER, ROLES.SUPER_ADMIN] },
   { id: 'settings', label: 'Settings', Icon: Settings, group: 'sys', roles: [ROLES.OWNER, ROLES.MANAGER] },
 ]
