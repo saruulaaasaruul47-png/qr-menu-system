@@ -25,6 +25,25 @@ const RESET_TOKEN_TTL = "10m";
 const resetCacheKey = (email) => `password-reset:${email}`;
 const createResetCode = () => String(Math.floor(100000 + Math.random() * 900000));
 
+const passwordResetDeliveryError = (delivery) => {
+  if (delivery.reason === "smtp_not_configured") {
+    return new HttpError(503, "Email service is not configured");
+  }
+
+  const reason = delivery.reason || "";
+  if (/Invalid login|Username and Password not accepted|EAUTH/i.test(reason)) {
+    return new HttpError(502, "Gmail SMTP login failed. Check SMTP_USER and the Google App Password in Render env vars.");
+  }
+  if (/Greeting never received|ETIMEDOUT|ECONNECTION|ESOCKET|timeout/i.test(reason)) {
+    return new HttpError(504, "Gmail SMTP timed out. Check Render outbound access and SMTP_HOST/SMTP_PORT.");
+  }
+  if (/sender|from|envelope/i.test(reason)) {
+    return new HttpError(502, "Gmail rejected the sender address. Set SMTP_FROM to QR Menu <your Gmail address> without quotes.");
+  }
+
+  return new HttpError(502, `Password reset email could not be sent: ${reason || "unknown SMTP error"}`);
+};
+
 const createPasswordResetEmail = ({ name, code }) => {
   const text = [
     `Hi ${name || "there"},`,
@@ -192,12 +211,7 @@ export const authService = {
     });
 
     if (delivery.delivery !== "sent") {
-      throw new HttpError(
-        delivery.reason === "smtp_not_configured" ? 503 : 500,
-        delivery.reason === "smtp_not_configured"
-          ? "Email service is not configured"
-          : "Password reset email could not be sent",
-      );
+      throw passwordResetDeliveryError(delivery);
     }
 
     return { message: "Password reset code sent" };
