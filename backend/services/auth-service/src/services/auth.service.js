@@ -20,6 +20,7 @@ const PLAN_LIMITS = Object.freeze({
   PREMIUM: 999999,
 });
 const RESET_CODE_TTL_MS = 15 * 60 * 1000;
+const RESET_CODE_TOKEN_TTL = "15m";
 const RESET_TOKEN_TTL = "10m";
 
 const resetCacheKey = (email) => `password-reset:${email}`;
@@ -206,6 +207,11 @@ export const authService = {
 
     const code = createResetCode();
     const codeHash = await bcrypt.hash(code, env.bcryptSaltRounds);
+    const resetSessionToken = jwt.sign(
+      { userId: user.id, email, codeHash, type: "password-reset-code" },
+      env.jwtRefreshSecret,
+      { expiresIn: RESET_CODE_TOKEN_TTL },
+    );
     cache.set(resetCacheKey(email), { userId: user.id, email, codeHash }, RESET_CODE_TTL_MS);
 
     const delivery = await mailer.send({
@@ -217,11 +223,21 @@ export const authService = {
       throw passwordResetDeliveryError(delivery);
     }
 
-    return { message: "Password reset code sent" };
+    return { message: "Password reset code sent", resetSessionToken };
   },
 
-  async verifyPasswordResetCode(email, code) {
-    const reset = cache.get(resetCacheKey(email));
+  async verifyPasswordResetCode(email, code, resetSessionToken) {
+    let reset = cache.get(resetCacheKey(email));
+    if (!reset && resetSessionToken) {
+      try {
+        const payload = jwt.verify(resetSessionToken, env.jwtRefreshSecret);
+        if (payload.type === "password-reset-code" && payload.email === email) {
+          reset = { userId: payload.userId, email: payload.email, codeHash: payload.codeHash };
+        }
+      } catch {
+        reset = null;
+      }
+    }
     if (!reset) throw new HttpError(400, "Invalid or expired reset code");
 
     const codeMatches = await bcrypt.compare(code, reset.codeHash);

@@ -14,7 +14,8 @@ export function AuthPage({ mode }) {
   const [message, setMessage] = useState('')
   const [loginForm, setLoginForm] = useState({ email: '', password: '' })
   const savedResetEmail = sessionStorage.getItem('resetEmail') || ''
-  const [recovery, setRecovery] = useState({ email: savedResetEmail, code: '', resetToken: '', newPassword: '' })
+  const savedResetSessionToken = sessionStorage.getItem('resetSessionToken') || ''
+  const [recovery, setRecovery] = useState({ email: savedResetEmail, code: '', resetToken: '', resetSessionToken: savedResetSessionToken, newPassword: '' })
   const [registerForm, setRegisterForm] = useState({
     restaurantName: '', ownerName: '', email: '', password: '', phone: '', address: '', plan: 'FREE',
   })
@@ -53,13 +54,16 @@ export function AuthPage({ mode }) {
   }) }
 
   const forgot = (e) => { e.preventDefault(); wrap(async () => {
-    await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email: recovery.email }), timeoutMs: 35000 })
+    const data = await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email: recovery.email }), timeoutMs: 35000 })
     sessionStorage.setItem('resetEmail', recovery.email)
+    if (data.resetSessionToken) sessionStorage.setItem('resetSessionToken', data.resetSessionToken)
+    setRecovery({ ...recovery, resetSessionToken: data.resetSessionToken || '' })
     route('/reset-password')
   }) }
 
   const verifyCode = (e) => { e.preventDefault(); wrap(async () => {
-    const data = await api('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify({ email: recovery.email, code: recovery.code }) })
+    const resetSessionToken = recovery.resetSessionToken || sessionStorage.getItem('resetSessionToken') || ''
+    const data = await api('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify({ email: recovery.email, code: recovery.code, resetSessionToken }) })
     setRecovery({ ...recovery, resetToken: data.resetToken })
     setMessage('Code verified. Enter a new password.')
   }) }
@@ -67,6 +71,7 @@ export function AuthPage({ mode }) {
   const reset = (e) => { e.preventDefault(); wrap(async () => {
     await api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ resetToken: recovery.resetToken, newPassword: recovery.newPassword }) })
     sessionStorage.removeItem('resetEmail')
+    sessionStorage.removeItem('resetSessionToken')
     setMessage('Password changed. You can login now.')
     route('/login')
   }) }

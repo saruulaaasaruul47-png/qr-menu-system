@@ -75,6 +75,7 @@ export const verifyResetCodeSchema = z.object({
   body: z.object({
     email: z.string().trim().email().toLowerCase(),
     code: z.string().trim().regex(/^\d{6}$/, "Code must be 6 digits"),
+    resetSessionToken: z.string().trim().min(20).optional(),
   }),
   params: z.object({}).optional(),
   query: z.object({}).optional(),

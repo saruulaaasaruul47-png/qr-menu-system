@@ -41,8 +41,8 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 export const verifyResetCode = asyncHandler(async (req, res) => {
-  const { email, code } = req.validated.body;
-  sendSuccess(res, await authService.verifyPasswordResetCode(email, code));
+  const { email, code, resetSessionToken } = req.validated.body;
+  sendSuccess(res, await authService.verifyPasswordResetCode(email, code, resetSessionToken));
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
