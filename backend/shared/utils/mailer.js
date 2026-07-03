@@ -10,6 +10,9 @@ const createTransporter = () => {
     port: env.smtpPort,
     secure: env.smtpPort === 465,
     requireTLS: env.smtpPort === 587,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     auth: {
       user: env.smtpUser,
       pass: env.smtpPass,

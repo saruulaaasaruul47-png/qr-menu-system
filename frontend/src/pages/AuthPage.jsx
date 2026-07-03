@@ -53,7 +53,7 @@ export function AuthPage({ mode }) {
   }) }
 
   const forgot = (e) => { e.preventDefault(); wrap(async () => {
-    await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email: recovery.email }) })
+    await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email: recovery.email }), timeoutMs: 35000 })
     sessionStorage.setItem('resetEmail', recovery.email)
     route('/reset-password')
   }) }
