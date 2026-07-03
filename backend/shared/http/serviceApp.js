@@ -27,11 +27,12 @@ export const createServiceApp = ({
   app.use(express.json({ limit: jsonLimit }));
   if (useUrlencoded) app.use(express.urlencoded({ extended: true }));
   app.use(morgan("combined", { stream: { write: (message) => logger.info(message.trim()) } }));
-  if (rateLimiter) app.use(rateLimiter);
 
   app.get("/health", (_req, res) => {
     sendSuccess(res, { service: serviceName, status: "ok" });
   });
+
+  if (rateLimiter) app.use(rateLimiter);
 
   routes.forEach(({ path, handlers }) => {
     app.use(path, ...handlers);

@@ -18,11 +18,12 @@ const server = createServer(app);
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(securityHeaders);
 app.use(morgan("combined", { stream: { write: (message) => logger.info(message.trim()) } }));
-app.use(tenantRateLimiter);
 
 app.get("/health", (_req, res) => {
   sendSuccess(res, { service: "api-gateway", status: "ok" });
 });
+
+app.use(tenantRateLimiter);
 
 app.get("/openapi.json", (_req, res) => {
   res.json(openApiSpec);
