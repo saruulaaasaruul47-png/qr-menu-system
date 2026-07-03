@@ -35,7 +35,7 @@ const passwordResetDeliveryError = (delivery) => {
     return new HttpError(502, "Gmail SMTP login failed. Check SMTP_USER and the Google App Password in Render env vars.");
   }
   if (/Greeting never received|ETIMEDOUT|ECONNECTION|ESOCKET|timeout/i.test(reason)) {
-    return new HttpError(504, "Gmail SMTP timed out. Check Render outbound access and SMTP_HOST/SMTP_PORT.");
+    return new HttpError(504, `Gmail SMTP timed out while connecting to ${env.smtpHost}:${env.smtpPort}. Check Render outbound access and SMTP_HOST/SMTP_PORT.`);
   }
   if (/sender|from|envelope/i.test(reason)) {
     return new HttpError(502, "Gmail rejected the sender address. Set SMTP_FROM to QR Menu <your Gmail address> without quotes.");
