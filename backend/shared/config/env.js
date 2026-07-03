@@ -66,6 +66,8 @@ const resolvedCorsOrigin = corsOrigin(process.env.CORS_ORIGIN);
 const defaultPublicUrl = process.env.NODE_ENV === "production"
   ? firstOrigin(resolvedCorsOrigin) || "https://qr-menu-system-lemon.vercel.app"
   : "http://localhost:5173";
+const configuredPublicUrl = normalizeServiceUrl(process.env.APP_PUBLIC_URL || "");
+const isLocalPublicUrlInProduction = process.env.NODE_ENV === "production" && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredPublicUrl);
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
@@ -87,7 +89,7 @@ export const env = {
   loyaltyServicePort: servicePort(process.env.LOYALTY_SERVICE_PORT, 3009),
   auditServicePort: servicePort(process.env.AUDIT_SERVICE_PORT, 3010),
   rabbitMqUrl: process.env.RABBITMQ_URL || "",
-  appPublicUrl: normalizeServiceUrl(process.env.APP_PUBLIC_URL || defaultPublicUrl),
+  appPublicUrl: isLocalPublicUrlInProduction ? defaultPublicUrl : normalizeServiceUrl(process.env.APP_PUBLIC_URL || defaultPublicUrl),
   stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
   stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
