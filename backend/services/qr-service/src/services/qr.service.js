@@ -24,9 +24,8 @@ export const qrService = {
       },
     });
 
-    const scanUrl = `${env.appPublicUrl}/qr/${qr.id}`;
     const menuUrl = `${env.appPublicUrl}/menu/${restaurantId}/table/${payload.tableId}`;
-    const dataUrl = await QRCode.toDataURL(scanUrl, {
+    const dataUrl = await QRCode.toDataURL(menuUrl, {
       errorCorrectionLevel: "M",
       margin: 2,
       width: 400,
@@ -35,11 +34,11 @@ export const qrService = {
 
     const updated = await prisma.qRCode.update({
       where: { id: qr.id },
-      data: { url: scanUrl },
+      data: { url: menuUrl },
     });
 
     await prisma.table.update({ where: { id: payload.tableId }, data: { qrCodeUrl: dataUrl } });
-    return { ...updated, scanUrl, menuUrl, qrDataUrl: dataUrl };
+    return { ...updated, scanUrl: menuUrl, menuUrl, qrDataUrl: dataUrl };
   },
 
   async createForTable(user, tableId) {
