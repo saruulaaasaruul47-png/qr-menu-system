@@ -17,6 +17,11 @@ export const createServiceApp = ({
 }) => {
   const app = express();
 
+  // Render terminates TLS at its reverse proxy. Trust exactly that one hop in
+  // production so req.ip is the visitor's address, not Render's proxy address.
+  // This keeps rate-limit buckets separate for different visitors.
+  if (env.nodeEnv === "production") app.set("trust proxy", 1);
+
   app.use(cors({ origin: env.corsOrigin, credentials: true }));
   app.use(securityHeaders);
 

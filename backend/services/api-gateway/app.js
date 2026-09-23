@@ -15,6 +15,11 @@ import { initRealtime } from "./src/realtime/socket.js";
 const app = express();
 const server = createServer(app);
 
+// The gateway is deployed behind Render's reverse proxy. Without this Express
+// sees the proxy IP for every request, causing unrelated visitors to share one
+// rate-limit bucket and receive 429 responses.
+if (env.nodeEnv === "production") app.set("trust proxy", 1);
+
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(securityHeaders);
 app.use(morgan("combined", { stream: { write: (message) => logger.info(message.trim()) } }));
