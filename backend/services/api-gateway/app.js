@@ -28,7 +28,13 @@ app.get("/health", (_req, res) => {
   sendSuccess(res, { service: "api-gateway", status: "ok" });
 });
 
-app.use(tenantRateLimiter);
+// Authentication endpoints use the auth service's dedicated limiter. Keep
+// them out of the tenant limiter, which otherwise groups anonymous visitors
+// by IP and can block legitimate registrations behind shared networks.
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/v1/auth/")) return next();
+  return tenantRateLimiter(req, res, next);
+});
 
 app.get("/openapi.json", (_req, res) => {
   res.json(openApiSpec);
